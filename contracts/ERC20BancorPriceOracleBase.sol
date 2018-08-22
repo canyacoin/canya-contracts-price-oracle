@@ -90,9 +90,9 @@ interface BancorConverter {
 contract ERC20BancorPriceOracleBase is Owned {
 
     IERC20Token public BNT; 
-    IERC20Token internal DAI;
+    IERC20Token public DAI;
 
-    BancorConverter internal DAIBNTConverter;
+    BancorConverter public DAIBNTConverter;
 
     /** 
       * @dev Constructor to set up base properties
@@ -101,6 +101,7 @@ contract ERC20BancorPriceOracleBase is Owned {
       * @param _daiBntConverter Address of deployed BancorConverter for BNT - DAI
       */
     constructor(address _bntToken, address _daiToken, address _daiBntConverter){
+        require(address(0) != _bntToken && address(0) != _daiToken && address(0) != _daiBntConverter, "Must contain valid addresses");
         BNT = IERC20Token(_bntToken);
         DAI = IERC20Token(_daiToken);
         DAIBNTConverter = BancorConverter(_daiBntConverter);
@@ -122,5 +123,35 @@ contract ERC20BancorPriceOracleBase is Owned {
       */
     function getDAIBNTConversion(uint256 _amountDAI) public view returns (uint256) {
         return DAIBNTConverter.getReturn(DAI, BNT, _amountDAI);
+    }
+
+    /** 
+      * @dev Update the address of BNT token
+      * @param _bntToken Address
+      */
+    function updateBNTAddress(address _bntToken) external
+    ownerOnly {
+        require(address(0) != _bntToken && _bntToken != address(BNT), "Must be a new, valid address");
+        BNT = IERC20Token(_bntToken);
+    }
+
+    /** 
+      * @dev Update the address of DAI token
+      * @param _daiToken Address
+      */
+    function updateDAIAddress(address _daiToken) external
+    ownerOnly {
+        require(address(0) != _daiToken && _daiToken != address(DAI), "Must be a new, valid address");
+        DAI = IERC20Token(_daiToken);
+    }
+
+    /** 
+      * @dev Update the address of dai-bnt converter
+      * @param _daiBntConverter Address
+      */
+    function updateConverterAddress(address _daiBntConverter) external
+    ownerOnly {
+        require(address(0) != _daiBntConverter && _daiBntConverter != address(DAIBNTConverter), "Must be a new, valid address");
+        DAIBNTConverter = BancorConverter(_daiBntConverter);
     }
 }

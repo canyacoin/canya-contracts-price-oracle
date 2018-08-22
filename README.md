@@ -2,16 +2,29 @@
 
  - Trusted __on chain token price Oracle__ (for any ERC20 token on the Bancor network)
  - Utilises the arbitraged service provided by Bancor
+ - Simulates `BancorConversion` containing US$50k in the token liquidity and US$150k in BNT-DAI liquidity 
  - Deployable and testable on testnet via truffle migration 
 
 
 ## How
 
  - `npm install -g truffle`
- - Modify settings in `2_converter_migration.js` to your ERC20 values
+ - Modify settings in `2_converter_migration.js` to your ERC20 values:
+
+```javascript
+   var myTokenName = 'CanYaCoin';
+   var myTokenSymbol = 'CAN';
+   var myTokenDecimals = '6';
+
+   var myTokenPriceUsd = 0.04;
+
+   var BNTPriceUsd = 1.6;
+```
+
  - `npm install -g ganache-cli`
  - `ganache-cli`
  - `truffle migrate --network ganache`
+ - Congrats! You deployed an oracle
 
 
 ## Post migration

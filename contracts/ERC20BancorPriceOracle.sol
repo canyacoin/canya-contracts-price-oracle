@@ -97,7 +97,7 @@ contract ERC20BancorPriceOracleBase {
  * @dev Used to get current conversion rates from ERC20 tokens on the Bancor network to DAI (stablecoin)
  * or BNT. Can be used as a trusted on chain price oracle for your token.
  */
-contract ERC20BancorPriceOracle {
+contract ERC20BancorPriceOracle is Owned {
 
     IERC20Token internal MyERC20Token;
     BancorConverter internal MyTokenConverter;
@@ -110,6 +110,7 @@ contract ERC20BancorPriceOracle {
       * @param _oracleBase Address of the oracle base containing BNT to DAI conversion
       */
     constructor(address _myERC20Token, address _myTokenConverter, address _oracleBase) {
+        require(address(0) != _myERC20Token && address(0) != _myTokenConverter && address(0) != _oracleBase, "Must contain valid addresses");
         MyERC20Token = IERC20Token(_myERC20Token);
         MyTokenConverter = BancorConverter(_myTokenConverter);
         OracleBase = ERC20BancorPriceOracleBase(_oracleBase);
@@ -133,6 +134,36 @@ contract ERC20BancorPriceOracle {
     function getDaiToToken(uint256 _daiAmount) external view returns (uint256) {
         uint bntValueOfDai = OracleBase.getDAIBNTConversion(_daiAmount);
         return MyTokenConverter.getReturn(OracleBase.BNT(), MyERC20Token, bntValueOfDai);
+    }
+
+    /** 
+      * @dev Update the address of my erc20 token
+      * @param _myToken Address
+      */
+    function updateMyTokenAddress(address _myToken) external
+    ownerOnly {
+        require(address(0) != _myToken && _myToken != address(MyERC20Token), "Must be a new, valid address");
+        MyERC20Token = IERC20Token(_myToken);
+    }
+
+    /** 
+      * @dev Update the address of eth-bnt converter
+      * @param _tokenConverter Address
+      */
+    function updateTokenConverterAddress(address _tokenConverter) external
+    ownerOnly {
+        require(address(0) != _tokenConverter && _tokenConverter != address(MyTokenConverter), "Must be a new, valid address");
+        MyTokenConverter = BancorConverter(_tokenConverter);
+    }
+
+    /** 
+      * @dev Update the address of oracle base contract
+      * @param _oracleBase Address
+      */
+    function updateOracleBaseAddress(address _oracleBase) external
+    ownerOnly {
+        require(address(0) != _oracleBase && _oracleBase != address(OracleBase), "Must be a new, valid address");
+        OracleBase = ERC20BancorPriceOracleBase(_oracleBase);
     }
 }
 
