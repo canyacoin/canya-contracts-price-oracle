@@ -26,6 +26,17 @@
  - `truffle migrate --network ganache`
  - Congrats! You deployed an oracle
 
+### Deploying to Ropsten
+ - ensure you have followed the first 2 steps above
+ - Fill in your details on `environment.sh` and run the script (`./environment.sh`)
+ - `npm install truffle-hdwallet-provider` 
+ - `truffle migrate --network ropsten`
+
+### Deploying a copy to mainnet
+ - Either choose to use a currently deployed and maintained version of the `OracleBase` contract or add these lines to your truffle migration:
+ - `await deployer.deploy(ERC20BancorPriceOracleBase, <BNTToken>.address, <DAIToken>.address, <DAIBNTConverter>.address)` <- deploy base oracle (DAI -> BNT conversion)
+ - `await deployer.deploy(ERC20BancorPriceOracle, <MyERC20Token>.address, <BancorToTokenConverter>.address, <ERC20BancorPriceOracleBase>.address)` <- ERC20->DAI oracle
+ - Use the address of this price oracle to interact with the contract from a custom contract
 
 ## Post migration
 
@@ -36,11 +47,8 @@
  - Deploy an instance of the contract at this address
  - Get the value of your token (including decimals) by hitting `getDaiToToken(1000000000000000000)`
 
-### Deploying a copy to mainnet
- - Either choose to use a currently deployed and maintained version of the `OracleBase` contract or add these lines to your truffle migration:
- - `await deployer.deploy(ERC20BancorPriceOracleBase, <BNTToken>.address, <DAIToken>.address, <DAIBNTConverter>.address)` <- deploy base oracle (DAI -> BNT conversion)
- - `await deployer.deploy(ERC20BancorPriceOracle, <MyERC20Token>.address, <BancorToTokenConverter>.address, <ERC20BancorPriceOracleBase>.address)` <- ERC20->DAI oracle
- - Use the address of this price oracle to interact with the contract from a custom contract
+### Use it in your contract
+ - xxx
 
 ## Testnet migration
 
