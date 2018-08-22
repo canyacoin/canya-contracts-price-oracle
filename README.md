@@ -1,6 +1,8 @@
 ## What
 
- - Bancor currency conversion
+ - Trusted __on chain token price Oracle__ (for any ERC20 token on the Bancor network)
+ - Utilises the arbitraged service provided by Bancor
+ - Deployable and testable on testnet via truffle migration 
 
 
 ## How
@@ -14,7 +16,22 @@
 
 ## Post migration
 
-### Check your token ratio to BNT
+### Interacting with the oracle
+ - Load up Remix (http://remix.ethereum.org) and create/compile a file with the code from `ERC20BancorPriceOracle.sol`
+ - Choose environment `Web3 Provider` on Remix and set it to localhost:8545 (ganache-cli)
+ - Grab the deployed `ERC20BancorPriceOracle` address from the migration output
+ - Deploy an instance of the contract at this address
+ - Get the value of your token (including decimals) by hitting `getDaiToToken(1000000000000000000)`
+
+### Deploying a copy to mainnet
+ - Either choose to use a currently deployed and maintained version of the `OracleBase` contract or add these lines to your truffle migration:
+ - `await deployer.deploy(ERC20BancorPriceOracleBase, <BNTToken>.address, <DAIToken>.address, <DAIBNTConverter>.address)` <- deploy base oracle (DAI -> BNT conversion)
+ - `await deployer.deploy(ERC20BancorPriceOracle, <MyERC20Token>.address, <BancorToTokenConverter>.address, <ERC20BancorPriceOracleBase>.address)` <- ERC20->DAI oracle
+ - Use the address of this price oracle to interact with the contract from a custom contract
+
+## Testnet migration
+
+### Debug migration info
  - Load up Remix (http://remix.ethereum.org) and create/compile a file with the `BancorConverter.sol`
  - Choose environment `Web3 Provider` on Remix and set it to localhost:8545 (ganache-cli)
 
