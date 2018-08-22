@@ -99,9 +99,9 @@ contract ERC20BancorPriceOracleBase {
  */
 contract ERC20BancorPriceOracle is Owned {
 
-    IERC20Token internal MyERC20Token;
-    BancorConverter internal MyTokenConverter;
-    ERC20BancorPriceOracleBase internal OracleBase;
+    IERC20Token public MyERC20Token;
+    BancorConverter public MyTokenConverter;
+    ERC20BancorPriceOracleBase public OracleBase;
 
     /** 
       * @dev Contructor
