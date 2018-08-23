@@ -1,5 +1,53 @@
 pragma solidity ^0.4.23;
 
+
+/**
+ * @title SafeMath
+ * @dev Math operations with safety checks that throw on error
+ */
+library SafeMath {
+
+  /**
+  * @dev Multiplies two numbers, throws on overflow.
+  */
+  function mul(uint256 a, uint256 b) internal pure returns (uint256 c) {
+    if (a == 0) {
+      return 0;
+    }
+    c = a * b;
+    assert(c / a == b);
+    return c;
+  }
+
+  /**
+  * @dev Integer division of two numbers, truncating the quotient.
+  */
+  function div(uint256 a, uint256 b) internal pure returns (uint256) {
+    // assert(b > 0); // Solidity automatically throws when dividing by 0
+    // uint256 c = a / b;
+    // assert(a == b * c + a % b); // There is no case in which this doesn't hold
+    return a / b;
+  }
+
+  /**
+  * @dev Subtracts two numbers, throws on overflow (i.e. if subtrahend is greater than minuend).
+  */
+  function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+    assert(b <= a);
+    return a - b;
+  }
+
+  /**
+  * @dev Adds two numbers, throws on overflow.
+  */
+  function add(uint256 a, uint256 b) internal pure returns (uint256 c) {
+    c = a + b;
+    assert(c >= a);
+    return c;
+  }
+}
+
+
 /*
     Owned contract interface
 */
@@ -99,6 +147,8 @@ contract ERC20BancorPriceOracleBase {
  */
 contract ERC20BancorPriceOracle is Owned {
 
+    using SafeMath for uint256;
+
     IERC20Token public MyERC20Token;
     BancorConverter public MyTokenConverter;
     ERC20BancorPriceOracleBase public OracleBase;
@@ -122,7 +172,9 @@ contract ERC20BancorPriceOracle is Owned {
       * @return Value of tokens in DAI
       */
     function getTokenToDai(uint256 _tokenAmount) external view returns (uint256) {
-        uint tokenValueInBNT = MyTokenConverter.getReturn(MyERC20Token, OracleBase.BNT(), _tokenAmount);
+        uint256 decimals = MyERC20Token.decimals();
+        uint256 valueOfOneToken = MyTokenConverter.getReturn(MyERC20Token, OracleBase.BNT(), 10 ** decimals);
+        uint256 tokenValueInBNT = valueOfOneToken.mul(_tokenAmount).div(10 ** decimals);
         return OracleBase.getBNTDAIConversion(tokenValueInBNT);
     }
 
@@ -133,7 +185,9 @@ contract ERC20BancorPriceOracle is Owned {
       */
     function getDaiToToken(uint256 _daiAmount) external view returns (uint256) {
         uint bntValueOfDai = OracleBase.getDAIBNTConversion(_daiAmount);
-        return MyTokenConverter.getReturn(OracleBase.BNT(), MyERC20Token, bntValueOfDai);
+        uint256 decimals = OracleBase.BNT().decimals();
+        uint256 valueOfOneBNT = MyTokenConverter.getReturn(OracleBase.BNT(), MyERC20Token, 10 ** decimals);
+        return valueOfOneBNT.mul(bntValueOfDai).div(10 ** decimals);
     }
 
     /** 
