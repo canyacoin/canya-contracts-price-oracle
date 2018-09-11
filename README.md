@@ -1,6 +1,6 @@
 ## What
 
- - Trusted __on chain token price Oracle__ (for any ERC20 token on the Bancor network)
+ - Trustless on chain token price Oracle (for any ERC20 token on the Bancor network)
  - Utilises the arbitraged service provided by Bancor
  - Simulates `BancorConversion` containing US$50k in the token liquidity and US$150k in BNT-DAI liquidity 
  - Check out the CAN -> DAI [conversion on Ropsten](https://ropsten.etherscan.io/address/0x70210b58094163735e0f8e3f5120e32f9cbc3a81#readContract) 
