@@ -1,3 +1,13 @@
+# Price Oracle
+
+**Mirror**
+
+This repo is mirrored from the Gitlab master as a backup. Please commit to this:
+
+https://gitlab.com/canyacoin/canyacore/price-oracle
+---
+
+
 ## What
 
  - Trustless on chain token price Oracle (for any ERC20 token on the Bancor network)
